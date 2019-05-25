@@ -8,6 +8,7 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 import VeeValidate from 'vee-validate';
+import BootstrapVue from 'bootstrap-vue'
 
 
 /**
@@ -32,6 +33,7 @@ Vue.component('company-index', require('./components/CompanyIndex.vue').default)
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 Vue.use(VeeValidate);
+Vue.use(BootstrapVue)
 const app = new Vue({
     el: '#app',
 });

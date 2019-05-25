@@ -17,13 +17,54 @@
                 <td><img height="50px;" :src="url+'/storage/'+company.image" :alt="company.id"></td>
                 <td>{{company.name}}</td>
                 <td>
-                  <button type="button" class="btn btn-primary">Edit</button>
+                  <button type="button" @click="showEdit(company, --index)" data-toggle="modal" data-target="#editCompany" class="btn btn-primary">Edit</button>
                   <button type="button" class="btn btn-warning">Own</button>
-                  <button type="button" class="btn btn-danger">Delete</button>
+                  <button type="button" @click="deleteCompany(company.id, --index)" class="btn btn-danger">Delete</button>
                 </td>
               </tr>
             </tbody>
           </table>
+
+          <!-- edit modal -->
+
+          <!-- Modal -->
+          <div  class="modal fade" id="editCompany" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                
+                      <div class="form-group">
+                        <label for="name">Name <span class="text-danger">*</span></label>
+                        <input type="text" v-validate="'required'" v-model="form.name" id="name" class="form-control" placeholder="Name" name="name">
+                        <span v-show="errors.has('name')" class="text-danger">{{ errors.first('name') }}</span>
+                      </div>
+                      
+                      <div class="form-group">
+                        <div class="input-group mb-3">
+                          <div class="custom-file">
+                            <label class="custom-file-label" for="image">Choose file <span class="text-danger">*</span></label>
+                            <input type="file"  @change="onFileChanged" name="image" placeholder="image" class="custom-file-input" id="image">
+                          
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="button" @click="validateBeforeSubmit"  data-dismiss="modal" class="btn btn-primary">Save changes</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
     </div>
 </div>
@@ -33,7 +74,15 @@
     export default {
        data: function () {
             return {
-                companies:null
+                companies:null,
+
+                editCompany:null,
+                index:null,
+
+                form:{
+                  name:null,
+                  image:null
+                }
             }
         },
         props:['url'],
@@ -41,19 +90,73 @@
         mounted() {
             let vm = this;
             
-              console.log(this.url); 
             axios.get('/api/company/all')
             .then(function (response) {
               vm.companies = response.data.data;
-                
-               console.log(vm.companies[0]);
             })
             .catch(function (error) {
                 console.log(error); 
             });
         },
         methods: {
-    
+          deleteCompany(id, index) {
+            let vm = this;
+            axios.delete('/api/companies/'+id)
+            .then(function (response) {
+                alert('deleted')
+                vm.companies.splice(index, 1);
+            })
+            .catch(function (error) {
+                console.log(error); 
+            });
+          },
+
+          onFileChanged (event) {
+              this.form.image = event.target.files[0]
+          },
+
+          showEdit(company, index){
+            this.editCompany = company;
+            this.index = index;
+            this.form.name = company.name;
+          },
+
+         validateBeforeSubmit() {
+            this.$validator.validateAll().then((result) => {
+              if (result) {
+                this.updateCompany();
+                return;
+              }
+
+              alert('Validation error! Image an name fields are reqire.');
+            });
+          },
+
+
+          updateCompany(){
+              const formData = new FormData();
+                formData.append('image', this.form.image);
+                formData.append('name', this.form.name);
+                formData.append('_method', 'put');
+
+              let vm = this;     
+             axios.post('/api/companies/'+this.editCompany.id, formData)
+                .then(function (response) {
+
+                  vm.companies[vm.index].name = response.data.success.data.name;
+                  vm.companies[vm.index].image = response.data.success.data.image;
+                  vm.editCompany = null;
+                  vm.index = null;
+                  vm.id = null;
+                  // $('#editCompany').modal('hide');
+
+                    alert('Succress')
+                })
+                .catch(function (error) {
+                    console.log(error.response); 
+                });
+          }  
+
         }
     }
 </script>

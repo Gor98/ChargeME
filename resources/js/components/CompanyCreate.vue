@@ -64,7 +64,7 @@
                 const formData = new FormData();
                 formData.append('image', this.form.image);
                 formData.append('name', this.form.name);
-
+                    
              axios.post('/api/companies', formData)
                 .then(function (response) {
                     alert('Succress')

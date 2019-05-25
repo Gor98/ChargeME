@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\Company\Store;
+use App\Http\Requests\Company\Destroy;
+use App\Http\Requests\Company\Update;
 use App\Company;
-
+use Storage;
 class CompanyController extends Controller
 {
     /**
@@ -97,9 +99,40 @@ class CompanyController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        //
+    public function update(Update $request, $id)
+    {    
+        $data = $request->all();
+
+        try {
+            // get company
+            $company = Company::findOrfail($id);
+
+            if ($request->image != 'null') {
+                // update image in storage
+                Storage::delete('/public/' . $company->image);
+                $data['image'] = $request->file('image')->store('public/company');
+                $data['image'] = str_replace("public/","", $data['image']);
+            }else {
+                unset($data['image']);
+            }
+  
+
+            // update company 
+            $company->update($data);
+        } catch(\Exaption $e) {
+            return response()->json(['error' => [
+                'message' => $e->getMessage()
+            ]], $e->getCode());
+
+        }
+
+        return response()->json(['success' => [
+                'message' => 'Updated!',
+                'data' => $$company = Company::findOrfail($id)
+            ]], 200);
+
+
+
     }
 
     /**
@@ -108,8 +141,18 @@ class CompanyController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Destroy $request, $id)
     {
-        //
+        try {
+            $company = Company::findOrfail($id);
+            Storage::delete('/public/' . $company->image);
+            $company->delete();
+            return response()->json(204);
+        } catch (\Exception $e) {
+                 return response()->json(['error' => [
+                'message' => $e->getMessage()
+            ]], $e->getCode());
+        }
+
     }
 }

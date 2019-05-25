@@ -68,6 +68,7 @@
              axios.post('/api/companies', formData)
                 .then(function (response) {
                     alert('Succress')
+                    window.location = '/api/companies';
                 })
                 .catch(function (error) {
                     console.log(error.response); 

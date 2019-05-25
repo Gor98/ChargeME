@@ -13,9 +13,19 @@ class CompanyController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request,  Company $company)
     {
-        dd(1);
+        return view('company.index'); 
+    }
+
+        /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function all(Company $company)
+    {
+         return response()->json(['data' => $company->all()], 200);
     }
 
     /**
@@ -40,8 +50,8 @@ class CompanyController extends Controller
         $data = $request->all();
 
         // store image 
-        $fileName   = time() . '.' . $request->file('image')->getClientOriginalExtension();
-        $data['image'] = $request->file('image')->storeAs('company/', $fileName);
+        $data['image'] = $request->file('image')->store('public/company');
+        $data['image'] = str_replace("public/","", $data['image']);
 
         try{
             // create company

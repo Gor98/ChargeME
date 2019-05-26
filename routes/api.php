@@ -17,5 +17,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::resource('companies', 'CompanyController');
+
 Route::get('company/all', 'CompanyController@all');
+Route::get('company/single/{id}', 'CompanyController@single');
+Route::resource('companies', 'CompanyController');
+
+Route::resource('stations', 'StationController');

@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\Station\Store;
+use App\Http\Requests\Station\destroy;
+use App\Station;
 
 class StationController extends Controller
 {
@@ -32,9 +35,23 @@ class StationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Store $request)
     {
-        //
+
+        try {
+            Station::create($request->all());
+        } catch(\Exaption $e) {
+            return response()->json(['error' => [
+                'message' => $e->getMessage()
+            ]], $e->getCode());
+
+        }
+
+        return response()->json(['success' => [
+            'message' => 'Created!'
+        ]], 201);
+
+
     }
 
     /**
@@ -77,8 +94,15 @@ class StationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(destroy $request, $id)
     {
-        //
+        try {
+            Station::findOrfail($id)->delete();
+            return response()->json(204);
+        } catch (\Exception $e) {
+                 return response()->json(['error' => [
+                'message' => $e->getMessage()
+            ]], $e->getCode());
+        }
     }
 }

@@ -26,6 +26,7 @@
     "dependencies": {
         "bootstrap-vue": "^2.0.0-rc.20",
         "bootstrapp": "0.0.0",
-        "vee-validate": "^2.2.8"
+        "vee-validate": "^2.2.8",
+        "vue2-google-maps": "^0.10.6"
     }
 }

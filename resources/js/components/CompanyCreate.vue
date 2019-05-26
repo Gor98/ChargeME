@@ -54,7 +54,7 @@
                   return;
                 }
 
-                alert('Validation error! Image an name fields are reqire.');
+                alert('Validation error! Image and Name fields are reqire.');
               });
             },
             onFileChanged (event) {

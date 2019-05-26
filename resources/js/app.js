@@ -9,7 +9,7 @@ require('./bootstrap');
 window.Vue = require('vue');
 import VeeValidate from 'vee-validate';
 import BootstrapVue from 'bootstrap-vue'
-
+import * as VueGoogleMaps from "vue2-google-maps";
 
 /**
  * The following block of code may be used to automatically register your
@@ -27,6 +27,12 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
 Vue.component('company-create', require('./components/CompanyCreate.vue').default);
 
 Vue.component('company-index', require('./components/CompanyIndex.vue').default);
+
+Vue.component('company-show', require('./components/CompanyShow.vue').default);
+
+Vue.component('map-station', require('./components/MapStation.vue').default);
+
+Vue.component('add-station', require('./components/AddStation.vue').default);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -34,6 +40,12 @@ Vue.component('company-index', require('./components/CompanyIndex.vue').default)
  */
 Vue.use(VeeValidate);
 Vue.use(BootstrapVue)
+Vue.use(VueGoogleMaps, {
+  load: {
+    key: "AIzaSyAgz1UUaFHTDhzr59ACOvexgm3uHLEEHf4",
+    libraries: "places"
+  }
+});
 const app = new Vue({
     el: '#app',
 });

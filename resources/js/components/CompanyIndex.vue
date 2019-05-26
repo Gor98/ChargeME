@@ -15,11 +15,11 @@
               <tr  v-for="(company, index) in companies" v-bind:key="company.id">
                 <th sope="row">{{++index}}</th>
                 <td><img height="50px;" :src="url+'/storage/'+company.image" :alt="company.id"></td>
-                <td>{{company.name}}</td>
+                <td><a :href="url+'/api/companies/'+company.id">{{company.name}}</a></td>
                 <td>
-                  <button type="button" @click="showEdit(company, --index)" data-toggle="modal" data-target="#editCompany" class="btn btn-primary">Edit</button>
-                  <button type="button" class="btn btn-warning">Own</button>
-                  <button type="button" @click="deleteCompany(company.id, --index)" class="btn btn-danger">Delete</button>
+                  <button type="button" @click="showEdit(company, --index)" data-toggle="modal" data-target="#editCompany" class="btn btn-primary mr-1">Edit</button>
+                  <button type="button" class="btn btn-warning mr-1">Own</button>
+                  <button type="button" @click="deleteCompany(company.id, --index)" class="btn btn-danger mr-1">Delete</button>
                 </td>
               </tr>
             </tbody>
@@ -39,7 +39,6 @@
                 </div>
                 <div class="modal-body">
                     <form>
-                
                       <div class="form-group">
                         <label for="name">Name <span class="text-danger">*</span></label>
                         <input type="text" v-validate="'required'" v-model="form.name" id="name" class="form-control" placeholder="Name" name="name">

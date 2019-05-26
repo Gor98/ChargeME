@@ -77,8 +77,17 @@ class CompanyController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
+    {     
+        return view('company.show', ['id' => $id]);
+    }
+
+    public function single($id)
     {
-        //
+        $company = Company::findOrfail($id)->load('stations');
+
+        return response()->json(['success' => [
+                'data' => $company
+            ]], 200);
     }
 
     /**

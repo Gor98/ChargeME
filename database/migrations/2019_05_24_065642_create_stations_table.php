@@ -19,7 +19,7 @@ class CreateStationsTable extends Migration
             $table->foreign('company_id')->references('id')
 				   ->on('companies')->onDelete('cascade');
             $table->string('name');
-            $table->decimal('long', 10, 7);
+            $table->decimal('lng', 10, 7);
 			$table->decimal('lat', 10, 7);
             $table->timestamps();
         });

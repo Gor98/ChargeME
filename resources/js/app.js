@@ -33,6 +33,8 @@ Vue.component('company-show', require('./components/CompanyShow.vue').default);
 Vue.component('map-station', require('./components/MapStation.vue').default);
 
 Vue.component('add-station', require('./components/AddStation.vue').default);
+
+Vue.component('station-index', require('./components/StationIndex.vue').default);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

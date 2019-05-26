@@ -16,9 +16,17 @@ class StationController extends Controller
      */
     public function index()
     {
-        //
+        return view('station.index');
     }
-
+        /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function all(Station $station)
+    {
+         return response()->json(['data' => $station->all()], 200);
+    }
     /**
      * Show the form for creating a new resource.
      *

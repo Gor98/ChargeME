@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\Company\Store;
 use App\Http\Requests\Company\Destroy;
 use App\Http\Requests\Company\Update;
+use App\Http\Requests\Company\Show;
 use App\Company;
 use Storage;
 class CompanyController extends Controller
@@ -15,7 +16,7 @@ class CompanyController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request,  Company $company)
+    public function index(Company $company)
     {
         return view('company.index'); 
     }
@@ -35,7 +36,7 @@ class CompanyController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Show $request)
     {
             return view('company.create');
     }
@@ -76,12 +77,12 @@ class CompanyController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Show $request, $id)
     {     
         return view('company.show', ['id' => $id]);
     }
 
-    public function single($id)
+    public function single(Show $request, $id)
     {
         $company = Company::findOrfail($id)->load('stations');
 

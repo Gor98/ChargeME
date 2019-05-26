@@ -17,9 +17,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
+// company routes
 Route::get('company/all', 'CompanyController@all');
 Route::get('company/single/{id}', 'CompanyController@single');
 Route::resource('companies', 'CompanyController');
 
+// station routes
+Route::get('station/all', 'StationController@all');
 Route::resource('stations', 'StationController');

@@ -2003,12 +2003,51 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       companies: null,
       editCompany: null,
       index: null,
+      targetCompany: null,
+      baseCompany: null,
+      targetIndex: null,
       form: {
         name: null,
         image: null
@@ -2029,7 +2068,7 @@ __webpack_require__.r(__webpack_exports__);
       var vm = this;
       axios["delete"]('/api/companies/' + id).then(function (response) {
         alert('deleted');
-        vm.companies.splice(index, 1);
+        location.reload();
       })["catch"](function (error) {
         console.log(error);
       });
@@ -2041,6 +2080,31 @@ __webpack_require__.r(__webpack_exports__);
       this.editCompany = company;
       this.index = index;
       this.form.name = company.name;
+    },
+    showBuy: function showBuy(company, index) {
+      this.targetCompany = company;
+      this.targetIndex = index;
+    },
+    buyCompany: function buyCompany() {
+      if (this.targetCompany === null || this.baseCompany === null) {
+        alert('Validation error! Chose base company.');
+      } else {
+        var vm = this;
+        axios.post('/api/company/buy', {
+          targetCompanyId: this.targetCompany.id,
+          baseCompanyId: this.baseCompany.id
+        }).then(function (response) {
+          vm.companies[vm.targetIndex]['is_child'] = 1;
+          vm.targetCompany = null;
+          vm.baseCompany = null;
+          vm.targetIndex = null;
+          alert('Succress');
+        })["catch"](function (error) {
+          vm.targetCompany = null;
+          vm.baseCompany = null;
+          console.log(error);
+        });
+      }
     },
     validateBeforeSubmit: function validateBeforeSubmit() {
       var _this = this;
@@ -2066,8 +2130,7 @@ __webpack_require__.r(__webpack_exports__);
         vm.companies[vm.index].image = response.data.success.data.image;
         vm.editCompany = null;
         vm.index = null;
-        vm.id = null; // $('#editCompany').modal('hide');
-
+        vm.id = null;
         alert('Succress');
       })["catch"](function (error) {
         console.log(error.response);
@@ -2087,6 +2150,8 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
 //
 //
 //
@@ -2201,9 +2266,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  mounted: function mounted() {
-    console.log('Component mounted.');
-  }
+  mounted: function mounted() {}
 });
 
 /***/ }),
@@ -2307,8 +2370,8 @@ __webpack_require__.r(__webpack_exports__);
       },
       markers: [],
       center: {
-        lat: 0,
-        lng: 0
+        lat: 48.864716,
+        lng: 2.349014
       },
       stations: ''
     };
@@ -79207,6 +79270,20 @@ var render = function() {
                   _c(
                     "button",
                     {
+                      staticClass: "btn btn-danger mr-1",
+                      attrs: { type: "button" },
+                      on: {
+                        click: function($event) {
+                          return _vm.deleteCompany(company.id, --index)
+                        }
+                      }
+                    },
+                    [_vm._v("Delete")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
                       staticClass: "btn btn-primary mr-1",
                       attrs: {
                         type: "button",
@@ -79226,23 +79303,19 @@ var render = function() {
                     "button",
                     {
                       staticClass: "btn btn-warning mr-1",
-                      attrs: { type: "button" }
-                    },
-                    [_vm._v("Own")]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-danger mr-1",
-                      attrs: { type: "button" },
+                      attrs: {
+                        type: "button",
+                        disabled: Number(company.is_child) === 1,
+                        "data-toggle": "modal",
+                        "data-target": "#BuyCompany"
+                      },
                       on: {
                         click: function($event) {
-                          return _vm.deleteCompany(company.id, --index)
+                          return _vm.showBuy(company, --index)
                         }
                       }
                     },
-                    [_vm._v("Delete")]
+                    [_vm._v("\r\n                  Buy")]
                   )
                 ])
               ])
@@ -79371,6 +79444,123 @@ var render = function() {
               ]
             )
           ]
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            staticClass: "modal fade",
+            attrs: {
+              id: "BuyCompany",
+              tabindex: "-1",
+              role: "dialog",
+              "aria-labelledby": "exampleModalLabel",
+              "aria-hidden": "true"
+            }
+          },
+          [
+            _c(
+              "div",
+              { staticClass: "modal-dialog", attrs: { role: "document" } },
+              [
+                _c("div", { staticClass: "modal-content" }, [
+                  _vm._m(4),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "modal-body" }, [
+                    _c("form", [
+                      _c("div", { staticClass: "form-group" }, [
+                        _c(
+                          "label",
+                          { attrs: { for: "exampleFormControlSelect2" } },
+                          [_vm._v("Select base company.")]
+                        ),
+                        _vm._v(" "),
+                        _vm.targetCompany
+                          ? _c(
+                              "select",
+                              {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.baseCompany,
+                                    expression: "baseCompany"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { id: "exampleFormControlSelect2" },
+                                on: {
+                                  change: function($event) {
+                                    var $$selectedVal = Array.prototype.filter
+                                      .call($event.target.options, function(o) {
+                                        return o.selected
+                                      })
+                                      .map(function(o) {
+                                        var val =
+                                          "_value" in o ? o._value : o.value
+                                        return val
+                                      })
+                                    _vm.baseCompany = $event.target.multiple
+                                      ? $$selectedVal
+                                      : $$selectedVal[0]
+                                  }
+                                }
+                              },
+                              _vm._l(_vm.companies, function(item) {
+                                return item.id !== _vm.targetCompany.id
+                                  ? _c(
+                                      "option",
+                                      { domProps: { value: item } },
+                                      [
+                                        _vm._v(
+                                          "\r\n                            " +
+                                            _vm._s(item.name) +
+                                            "\r\n                          "
+                                        )
+                                      ]
+                                    )
+                                  : _vm._e()
+                              }),
+                              0
+                            )
+                          : _vm._e()
+                      ]),
+                      _vm._v(" "),
+                      _vm.targetCompany
+                        ? _c("div", [
+                            _c("p", [
+                              _vm._v("Target company is "),
+                              _c("b", [_vm._v(_vm._s(this.targetCompany.name))])
+                            ])
+                          ])
+                        : _vm._e()
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "modal-footer" }, [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-secondary",
+                        attrs: { type: "button", "data-dismiss": "modal" }
+                      },
+                      [_vm._v("Close")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary",
+                        attrs: { type: "button", "data-dismiss": "modal" },
+                        on: { click: _vm.buyCompany }
+                      },
+                      [_vm._v("Save changes")]
+                    )
+                  ])
+                ])
+              ]
+            )
+          ]
         )
       ])
     ])
@@ -79439,6 +79629,31 @@ var staticRenderFns = [
         _c("span", { staticClass: "text-danger" }, [_vm._v("*")])
       ]
     )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c(
+        "h5",
+        { staticClass: "modal-title", attrs: { id: "exampleModalLabel" } },
+        [_vm._v("Modal title")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
   }
 ]
 render._withStripped = true
@@ -79513,7 +79728,13 @@ var render = function() {
                             { staticClass: "col-4 offset-md-2  mb-2 mt-4" },
                             [
                               _c("h4", { staticClass: "text-center" }, [
-                                _vm._v(_vm._s(station.name))
+                                _vm._v(
+                                  _vm._s(station.name) +
+                                    " \n                                    "
+                                ),
+                                station.is_child
+                                  ? _c("span", [_vm._v("(child)")])
+                                  : _vm._e()
                               ])
                             ]
                           ),
@@ -95014,8 +95235,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! w:\domains\ChargeME\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! w:\domains\ChargeME\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! w:\domains\chargeme.test\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! w:\domains\chargeme.test\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

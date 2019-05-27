@@ -20,7 +20,9 @@
                             <template v-for="(station, index) in company.stations" >
                                 <div class="row">
                                   <div class="col-4 offset-md-2  mb-2 mt-4">
-                                      <h4  class="text-center">{{station.name}}</h4>
+                                      <h4  class="text-center">{{station.name}} 
+                                        <span v-if="station.is_child">(child)</span>
+                                      </h4>
                                   </div>
                                   <div class="col-3 offset-md-2  mb-2 mt-4">
                                        <button type="button" @click="deleteStations(station.id)" class="btn btn-danger">Delete</button>

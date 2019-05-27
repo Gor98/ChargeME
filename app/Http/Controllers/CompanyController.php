@@ -7,8 +7,10 @@ use App\Http\Requests\Company\Store;
 use App\Http\Requests\Company\Destroy;
 use App\Http\Requests\Company\Update;
 use App\Http\Requests\Company\Show;
+use App\Http\Requests\Company\Buy;
 use App\Company;
 use Storage;
+
 class CompanyController extends Controller
 {
     /**
@@ -16,7 +18,7 @@ class CompanyController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Company $company)
+    public function index(Show $request)
     {
         return view('company.index'); 
     }
@@ -30,7 +32,36 @@ class CompanyController extends Controller
     {
          return response()->json(['data' => $company->all()], 200);
     }
+    
+    /**
+     * buy company.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function buy(Buy $request)
+    {
 
+         try{
+            // get base company
+            $baseCompany = Company::findOrfail($request->baseCompanyId);
+
+            // buy target company
+            $baseCompany->child()->attach($request->targetCompanyId);
+            // set target company as purchased
+            Company::where('id', $request->targetCompanyId)->update(['is_child' => 1]);
+
+        } catch(\Exaption $e) {
+            return response()->json(['error' => [
+                'message' => $e->getMessage()
+            ]], $e->getCode());
+
+        }
+
+        return response()->json(['success' => [
+                'message' => 'Company created!'
+            ]], 201);
+    
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -78,13 +109,17 @@ class CompanyController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(Show $request, $id)
-    {     
+    {        
         return view('company.show', ['id' => $id]);
     }
 
     public function single(Show $request, $id)
     {
+        // get company with statoins
         $company = Company::findOrfail($id)->load('stations');
+
+        // check if has childer then fetch its stations
+        $company = $company->allStations($company);
 
         return response()->json(['success' => [
                 'data' => $company
@@ -156,6 +191,10 @@ class CompanyController extends Controller
         try {
             $company = Company::findOrfail($id);
             Storage::delete('/public/' . $company->image);
+            
+            if($company->child()->exists()){
+                $company->child()->update(['is_child' => 0]);
+            }
             $company->delete();
             return response()->json(204);
         } catch (\Exception $e) {
@@ -165,4 +204,14 @@ class CompanyController extends Controller
         }
 
     }
+
+    public function tree($id)
+    {
+
+        $company = Company::findOrfail($id);
+          $company = $company->hierarchically($company);
+        dd($company);
+    
+    }
+
 }

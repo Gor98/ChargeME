@@ -30,7 +30,7 @@
                 disableDefaultUI : true
               },
               markers: [],
-              center:{lat:0, lng:0},
+              center:{lat:48.864716, lng: 2.349014},
               stations:''
   
             }

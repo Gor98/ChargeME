@@ -21,7 +21,9 @@ class Company extends Model
 
 	public function allStations($company){
 		 if($company->child()->exists()){
+		 
             foreach ($company->child as $key => $value) {
+
                 foreach ($value->stations as $key => $item) {
                 	$item->is_child = 1; 
                     $this->stations->push($item);

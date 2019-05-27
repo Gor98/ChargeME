@@ -18,7 +18,7 @@ class CompanyController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Show $request)
+    public function index(Show $request, Company $company)
     {
         return view('company.index'); 
     }
@@ -30,7 +30,7 @@ class CompanyController extends Controller
      */
     public function all(Company $company)
     {
-         return response()->json(['data' => $company->all()], 200);
+         return response()->json(['data' => $company->with('parent')->get()], 200);
     }
     
     /**
@@ -109,7 +109,7 @@ class CompanyController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(Show $request, $id)
-    {        
+    {   
         return view('company.show', ['id' => $id]);
     }
 
@@ -205,13 +205,6 @@ class CompanyController extends Controller
 
     }
 
-    public function tree($id)
-    {
 
-        $company = Company::findOrfail($id);
-          $company = $company->hierarchically($company);
-        dd($company);
-    
-    }
 
 }

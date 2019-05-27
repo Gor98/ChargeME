@@ -82,7 +82,7 @@
                         <div class="form-group">
                           <label for="exampleFormControlSelect2">Select base company.</label>
                           <select  v-model="baseCompany" v-if="targetCompany" class="form-control" id="exampleFormControlSelect2">
-                             <option v-if="item.id !== targetCompany.id" v-for="item in companies" v-bind:value="item">
+                             <option  v-if="!item.is_child && item.id !== targetCompany.id" v-for="item in companies" v-bind:value="item">
                             {{ item.name }}
                           </option>
                           </select>
@@ -126,6 +126,23 @@
         },
         props:['url'],
 
+        computed: {
+            // filterCompanies () {
+            //   return this.companies.filter(com => {
+            //     console.log( com.parent)
+            //      parent =  com.parent.map(par => {
+            //               return par.id != this.targetCompany.id
+            //               })[0]
+            //     if (typeof parent === 'undefined') {
+            //        return  (com.id != this.targetCompany.id) 
+            //     }else{
+            //        return  (com.id != this.targetCompany.id)  && parent
+            //     }
+            
+               
+            //   })
+            // }
+        },    
         mounted() {
             let vm = this;
             
@@ -180,6 +197,7 @@
                   vm.targetCompany = null;
                   vm.baseCompany = null;
                   vm.targetIndex  = null;
+                  location.reload();
                   alert('Succress')
               })
               .catch(function (error) {

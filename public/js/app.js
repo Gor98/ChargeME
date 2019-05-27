@@ -2055,6 +2055,20 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   props: ['url'],
+  computed: {// filterCompanies () {
+    //   return this.companies.filter(com => {
+    //     console.log( com.parent)
+    //      parent =  com.parent.map(par => {
+    //               return par.id != this.targetCompany.id
+    //               })[0]
+    //     if (typeof parent === 'undefined') {
+    //        return  (com.id != this.targetCompany.id) 
+    //     }else{
+    //        return  (com.id != this.targetCompany.id)  && parent
+    //     }
+    //   })
+    // }
+  },
   mounted: function mounted() {
     var vm = this;
     axios.get('/api/company/all').then(function (response) {
@@ -2098,6 +2112,7 @@ __webpack_require__.r(__webpack_exports__);
           vm.targetCompany = null;
           vm.baseCompany = null;
           vm.targetIndex = null;
+          location.reload();
           alert('Succress');
         })["catch"](function (error) {
           vm.targetCompany = null;
@@ -79507,7 +79522,8 @@ var render = function() {
                                 }
                               },
                               _vm._l(_vm.companies, function(item) {
-                                return item.id !== _vm.targetCompany.id
+                                return !item.is_child &&
+                                  item.id !== _vm.targetCompany.id
                                   ? _c(
                                       "option",
                                       { domProps: { value: item } },

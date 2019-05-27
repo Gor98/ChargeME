@@ -28,4 +28,3 @@ Route::get('station/all', 'StationController@all');
 Route::resource('stations', 'StationController');
 
 
-Route::get('tree/{id}', 'CompanyController@tree');
